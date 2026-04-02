@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Оформление заказа | sumki_by_zhama{% endblock %}
+{% block content %}
+<h1>Оформление заказа</h1>
+<div class="checkout-grid">
+    <div>
+        <h3>Ваш заказ</h3>
+        {% for item in cart.items.all %}
+            <p>{{ item.product.name }} - {{ item.quantity }} шт. - {{ item.total_price }} сом</p>
+        {% endfor %}
+        <p class="total">Итого: {{ cart.total_price }} сом</p>
+    </div>
+    <div>
+        <form method="post" class="checkout-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Подтвердить заказ</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Заказ оформлен | sumki_by_zhama{% endblock %}
+{% block content %}
+<section class="success">
+    <h1>Спасибо за заказ!</h1>
+    <p>Ваш заказ №{{ order.id }} принят. Мы свяжемся с вами по номеру {{ order.phone }}.</p>
+    <h3>Состав заказа</h3>
+    {% for item in order.items.all %}
+        <p>{{ item.product.name }} - {{ item.quantity }} x {{ item.price }} сом</p>
+    {% endfor %}
+    <p class="total">Сумма заказа: {{ order.total_price }} сом</p>
+    <a class="btn" href="{% url 'shop:product_list' %}">Вернуться в каталог</a>
+</section>
+{% endblock %}

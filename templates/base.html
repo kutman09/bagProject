@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}sumki_by_zhama{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header class="header">
+    <div class="container nav">
+        <a href="{% url 'shop:product_list' %}" class="logo">SUMKI_BY_ZHAMA</a>
+        <button class="burger" id="burgerBtn" aria-label="Меню" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="menu" id="mobileMenu">
+            <a href="{% url 'shop:product_list' %}">Каталог</a>
+            <a href="https://www.instagram.com/sumki_by_zhama?igsh=MWE3dWZ5Z2Q1eDBheA==" target="_blank" rel="noopener">Instagram</a>
+            <a href="https://wa.me/+996551013163" target="_blank" rel="noopener">WhatsApp</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'shop:cart' %}">Корзина ({{ cart_items_count }})</a>
+                <a href="{% url 'shop:logout' %}">Выйти</a>
+            {% else %}
+                <a href="{% url 'shop:login' %}">Войти</a>
+                <a href="{% url 'shop:register' %}">Регистрация</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<main class="container main-content">
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <p class="message {{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="container footer-grid">
+        <div>
+            <p><strong>sumki_by_zhama</strong></p>
+            <p>Сумки оптом и в розницу</p>
+            <p>Женские трендовые сумки 2025-2026</p>
+        </div>
+        <div>
+            <p><strong>Контакты</strong></p>
+            <p>Телефон: <a href="tel:+996551013163">+996 551 013 163</a></p>
+            <p>WhatsApp: <a href="https://wa.me/+996551013163" target="_blank" rel="noopener">написать</a></p>
+            <p>Instagram: <a href="https://www.instagram.com/sumki_by_zhama?igsh=MWE3dWZ5Z2Q1eDBheA==" target="_blank" rel="noopener">@sumki_by_zhama</a></p>
+        </div>
+        <div>
+            <p><strong>Адрес и доставка</strong></p>
+            <p>Кара-Суу. Оомат. О-ряд. 55-контейнер</p>
+            <p>Доставка по Кыргызстану</p>
+            <p>Прямые поставки, доступные цены</p>
+        </div>
+    </div>
+</footer>
+
+<nav class="mobile-bottom-nav">
+    <a href="{% url 'shop:product_list' %}" class="active">Каталог</a>
+    <a href="{% url 'shop:product_list' %}?q=">Поиск</a>
+    <a href="{% url 'shop:cart' %}">Корзина{% if cart_items_count %} ({{ cart_items_count }}){% endif %}</a>
+    <a href="https://www.instagram.com/sumki_by_zhama?igsh=MWE3dWZ5Z2Q1eDBheA==" target="_blank" rel="noopener">Instagram</a>
+    {% if user.is_authenticated %}
+        <a href="{% url 'shop:logout' %}">Профиль</a>
+    {% else %}
+        <a href="{% url 'shop:login' %}">Профиль</a>
+    {% endif %}
+</nav>
+
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} | sumki_by_zhama{% endblock %}
+{% block content %}
+<section class="product-detail">
+    <div class="gallery">
+        {% for img in product.images.all %}
+            <img src="{{ img.image.url }}" alt="{{ product.name }}">
+        {% empty %}
+            <div class="placeholder big">Нет фото</div>
+        {% endfor %}
+    </div>
+    <div class="info">
+        <h1>{{ product.name }}</h1>
+        <p class="price">{{ product.price }} сом</p>
+        {% if product.old_price %}
+            <p class="old-price">{{ product.old_price }} сом</p>
+        {% endif %}
+        <p>{{ product.description }}</p>
+        <ul>
+            <li>Материал: {{ product.material|default:"Не указан" }}</li>
+            <li>Цвет: {{ product.color|default:"Не указан" }}</li>
+            <li>Артикул: {{ product.sku }}</li>
+        </ul>
+        <a href="{% url 'shop:add_to_cart' product.id %}" class="btn">Добавить в корзину</a>
+    </div>
+</section>
+
+<section class="reviews">
+    <h2>Отзывы ({{ reviews.count }})</h2>
+    {% for review in reviews %}
+        <article class="review">
+            <p><strong>{{ review.user.username }}</strong> - {{ review.stars }}/5</p>
+            <p>{{ review.comment }}</p>
+        </article>
+    {% empty %}
+        <p>Пока нет отзывов.</p>
+    {% endfor %}
+
+    <div class="review-form">
+        <h3>Оставить отзыв</h3>
+        {% if user.is_authenticated %}
+            {% if can_review %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn">Отправить отзыв</button>
+                </form>
+            {% else %}
+                <p>Вы уже оставили отзыв для этого товара.</p>
+            {% endif %}
+        {% else %}
+            <p><a href="{% url 'shop:login' %}">Войдите</a>, чтобы оставить отзыв.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

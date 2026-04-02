@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Корзина | sumki_by_zhama{% endblock %}
+{% block content %}
+<h1>Ваша корзина</h1>
+{% if cart.items.all %}
+    <div class="cart-list">
+        {% for item in cart.items.all %}
+            <div class="cart-item">
+                <div>
+                    <h3>{{ item.product.name }}</h3>
+                    <p>{{ item.product.price }} сом x {{ item.quantity }}</p>
+                    <p><strong>{{ item.total_price }} сом</strong></p>
+                </div>
+                <div class="cart-actions">
+                    <a href="{% url 'shop:update_cart_item' item.id 'minus' %}">-</a>
+                    <span>{{ item.quantity }}</span>
+                    <a href="{% url 'shop:update_cart_item' item.id 'plus' %}">+</a>
+                    <a href="{% url 'shop:update_cart_item' item.id 'remove' %}" class="danger">Удалить</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <p class="total">Итого: {{ cart.total_price }} сом</p>
+    <a href="{% url 'shop:checkout' %}" class="btn">Оформить заказ</a>
+{% else %}
+    <p>Корзина пока пуста.</p>
+{% endif %}
+{% endblock %}

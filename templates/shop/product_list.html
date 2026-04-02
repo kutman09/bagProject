@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Каталог сумок | sumki_by_zhama{% endblock %}
+{% block content %}
+<section class="breadcrumbs">
+    <a href="{% url 'shop:product_list' %}">Главная</a>
+    <span>/</span>
+    <span>Женские сумки</span>
+</section>
+
+<section class="hero mobile-hero">
+    <h1>Женские сумки в Кыргызстане</h1>
+    <p>{{ page_obj.paginator.count }} товар(ов)</p>
+</section>
+
+<section class="filters compact-filters">
+    <form method="get" class="filter-grid mobile-grid">
+        <input type="text" name="q" placeholder="Поиск" value="{{ query }}" class="search-input">
+        <select name="sort">
+            <option value="new" {% if sort == "new" %}selected{% endif %}>По популярности</option>
+            <option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>Цена: по возрастанию</option>
+            <option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>Цена: по убыванию</option>
+            <option value="name" {% if sort == "name" %}selected{% endif %}>По названию</option>
+            <option value="rating" {% if sort == "rating" %}selected{% endif %}>По рейтингу</option>
+        </select>
+        <select name="category">
+            <option value="">Категории</option>
+            {% for cat in categories %}
+                <option value="{{ cat.slug }}" {% if current_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="number" name="min_price" placeholder="Цена от" value="{{ min_price }}">
+        <input type="number" name="max_price" placeholder="Цена до" value="{{ max_price }}">
+        <button type="submit">Фильтр</button>
+    </form>
+</section>
+
+<section class="products-grid">
+    {% for product in page_obj %}
+        <article class="card">
+            {% with main_image=product.images.first %}
+                {% if main_image %}
+                    <img src="{{ main_image.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <div class="placeholder">Нет фото</div>
+                {% endif %}
+            {% endwith %}
+            <div class="card-body">
+                <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                <p class="price">{{ product.price }} сом</p>
+                <p class="rating">★★★★★ <span>{{ product.average_rating }}</span></p>
+                <div class="card-actions">
+                    <a href="{{ product.get_absolute_url }}" class="btn btn-light">Открыть</a>
+                    <a href="{% url 'shop:add_to_cart' product.id %}" class="btn">🛒</a>
+                </div>
+            </div>
+        </article>
+    {% empty %}
+        <p>По вашему запросу ничего не найдено.</p>
+    {% endfor %}
+</section>
+
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&q={{ query }}&category={{ current_category }}&min_price={{ min_price }}&max_price={{ max_price }}&sort={{ sort }}">Назад</a>
+    {% endif %}
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&q={{ query }}&category={{ current_category }}&min_price={{ min_price }}&max_price={{ max_price }}&sort={{ sort }}">Вперед</a>
+    {% endif %}
+</nav>
+{% endif %}
+{% endblock %}
